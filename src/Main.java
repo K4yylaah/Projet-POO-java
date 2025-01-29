@@ -1,52 +1,34 @@
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        JSONParser parser = new JSONParser();
+
         List<Product> productList = new ArrayList<>();
+        productList.add(new Product(1L, "Amoxicilline", "Médicaments", "Antibiotiques", 5.99, 120, "Antibiotique à large spectre pour les infections bactériennes."));
+        productList.add(new Product(2L, "Azithromycine", "Médicaments", "Antibiotiques", 7.49, 50, "Traitement des infections respiratoires et ORL."));
+        productList.add(new Product(3L, "Paracétamol", "Médicaments", "Antalgiques", 1.99, 300, "Traitement de la douleur et de la fièvre."));
+        productList.add(new Product(4L, "Ibuprofène", "Médicaments", "Antalgiques", 3.49, 200, "Anti-inflammatoire non stéroïdien."));
+        productList.add(new Product(5L, "Ciprofloxacine", "Médicaments", "Antibiotiques", 8.29, 75, "Antibiotique utilisé pour les infections urinaires."));
 
-        try (FileReader reader = new FileReader("stocks_pharma.json")) {
-            // Lire le fichier JSON
-            Object object = parser.parse(reader);
-            JSONObject jsonObject = (JSONObject) object;
 
-            // Accéder aux produits
-            JSONObject pharmacie = (JSONObject) jsonObject.get("pharmacie");
-            JSONArray produits = (JSONArray) pharmacie.get("produits");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Entrez le nom du produit à rechercher : ");
+        String productName = scanner.nextLine();
 
-            for (Object produitObj : produits) {
-                JSONObject produit = (JSONObject) produitObj;
-                String categorie = (String) produit.get("categorie");
-                String sousCategorie = (String) produit.get("sousCategorie");
 
-                JSONArray produitsDetails = (JSONArray) produit.get("produits");
-                for (Object produitDetailObj : produitsDetails) {
-                    JSONObject produitDetail = (JSONObject) produitDetailObj;
-                    Long id = (Long) produitDetail.get("id");
-                    String nomProduit = (String) produitDetail.get("nom");
-                    Double prixProduit = (Double) produitDetail.get("prix");
-                    Long quantiteStock = (Long) produitDetail.get("quantiteStock");
-                    String description = (String) produitDetail.get("description");
-                    // Création de l'objet Product
-                    Product product = new Product(id, nomProduit,categorie,sousCategorie, prixProduit, quantiteStock.intValue(), description);
-                    productList.add(product);
-                }
-            }
+        Product foundProduct = ProductSearch.searchProduct(productList, productName);
 
-            // Affichage des produits créés
-            for (Product p : productList) {
-                System.out.println(p.name);
-            }
 
-        } catch (IOException | ParseException | IllegalArgumentException e) {
-            e.printStackTrace();
+        if (foundProduct != null) {
+            System.out.println("Produit trouvé :");
+            System.out.println("Nom : " + foundProduct.name);
+            System.out.println("Prix : " + foundProduct.price + " €");
+            System.out.println("Quantité en stock : " + foundProduct.quantityStock);
+            System.out.println("Description : " + foundProduct.description);
+        } else {
+            System.out.println("Produit non trouvé.");
         }
     }
 }

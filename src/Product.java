@@ -15,4 +15,9 @@ public class Product{
         this.quantityStock = quantityStock;
         this.description = description;
     }
+
+
+    public int compareToIgnoreCase(String otherName) {
+        return this.name.compareToIgnoreCase(otherName);
+    }
 }
