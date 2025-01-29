@@ -15,4 +15,14 @@ public class Product{
         this.quantityStock = quantityStock;
         this.description = description;
     }
+
+    public void printAttributs(){
+        System.out.println("ID: " + id);
+        System.out.println("Name: " + name);
+        System.out.println("Category: " + category);
+        System.out.println("Subcategory: " + subcategory);
+        System.out.println("Price: " + price);
+        System.out.println("Quantity: " + quantityStock);
+        System.out.println("Description: " + description);
+    }
 }
