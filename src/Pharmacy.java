@@ -3,11 +3,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Comparator;
+import java.util.*;
 
 public class Pharmacy implements Serializable {
     public String name;
@@ -94,4 +90,37 @@ public class Pharmacy implements Serializable {
             System.out.println(e);
         }
     }
-}
+    public static void searchProductMenu(Scanner scanner, Pharmacy newpharmacy) {
+        System.out.print("Entrez le nom du produit à rechercher : ");
+        scanner.nextLine();
+        String productName = scanner.nextLine();
+
+        Product product = newpharmacy.searchProduct(productName);
+
+        if (product != null) {
+            product.printAttributes();
+        } else {
+            System.out.println("Produit non trouvé.");
+        }
+
+    }
+    public static void removeProduct(Scanner scanner, Pharmacy newpharmacy) {
+        System.out.print("Entrez le nom du produit à supprimer : ");
+        scanner.nextLine();
+        String productName = scanner.nextLine();
+
+        if (productName != null && !productName.isEmpty()) {
+            Optional<Product> productToRemove = newpharmacy.products.stream()
+                    .filter(f -> f.name.equals(productName))
+                    .findFirst();
+            if (productToRemove.isPresent()) {
+                // Si le produit existe, on le supprime
+                newpharmacy.products.remove(productToRemove.get());
+                System.out.println("Le produit a été supprimé.");
+            } else {
+                System.out.println("Produit non trouvé.");
+            }
+        } else {
+            System.out.println("La suppression a échoué. Nom de produit invalide.");
+        }
+    }}

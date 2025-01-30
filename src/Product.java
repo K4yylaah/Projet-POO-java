@@ -25,4 +25,8 @@ public class Product implements java.io.Serializable{
         System.out.println("Quantity: " + quantityStock);
         System.out.println("Description: " + description);
     }
+    public String getName(){
+        return name;
+    }
 }
+

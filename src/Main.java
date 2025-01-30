@@ -24,11 +24,12 @@ public class Main {
                     newpharmacy.checkInventory();
                     break;
                 case 2:
-                    searchProductMenu(scanner, newpharmacy);
+                    Pharmacy.searchProductMenu(scanner, newpharmacy);
                     break;
-                case 3:
-
                 case 4:
+                    Pharmacy.removeProduct(scanner, newpharmacy);
+                    break;
+                case 5:
                     System.out.println("Merci d'avoir utilisé notre pharmacie ! À bientôt.");
                     scanner.close();
                     return;
@@ -42,8 +43,9 @@ public class Main {
         System.out.println("\n=== MENU Pharmacie Cergy===");
         System.out.println("1. Afficher l'inventaire de la pharmacie");
         System.out.println("2. Rechercher un produit");
-        System.out.println("2. passer commande");
-        System.out.println("4. Quitter");
+        System.out.println("3. passer commande");
+        System.out.println("4. Retirer un produit");
+        System.out.println("5. Quitter");
         System.out.print("Votre choix : ");
     }
 
@@ -55,17 +57,6 @@ public class Main {
         return scanner.nextInt();
     }
 
-    public static void searchProductMenu(Scanner scanner, Pharmacy newpharmacy) {
-        System.out.print("Entrez le nom du produit à rechercher : ");
-        scanner.nextLine();
-        String productName = scanner.nextLine();
 
-        Product product = newpharmacy.searchProduct(productName);
-
-        if (product != null) {
-            product.printAttributes();
-        } else {
-            System.out.println("Produit non trouvé.");
-        }
-    }
 }
+
