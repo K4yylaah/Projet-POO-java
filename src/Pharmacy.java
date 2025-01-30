@@ -1,55 +1,48 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-public class Pharmacy implements Serializable, java.io.Serializable {
+import java.io.*;
+import java.util.*;
+
+public class Pharmacy implements Serializable {
     String name;
     String address;
     List<Product> products;
+    Map<Product, Integer> quantites;
 
     public Pharmacy(String name, String address, List<Product> products) {
         this.name = name;
         this.address = address;
         this.products = products;
-    }
-    public List triMedicaments(){
-        List<Product> names = new ArrayList<>();
-        for (Product p : products){
-            names.add(p);
-        }
-        String temp;
-        for (int i = 0; i < names.size(); i++) {
-            for (int j = i + 1; j < names.size(); j++) {
+        this.quantites = new HashMap<>();
 
-                // to compare one string with other strings
-                if (names.get(i).name.compareTo(names.get(j).name) > 0) {
-                    // swapping
-                    temp = names.get(i).name;
-                    names.get(i).name =  names.get(j).name;
-                    names.get(j).name = temp;
-                }
-            }
+        for (Product p : products) {
+            quantites.put(p, 100);
         }
-        return names;
     }
-    void checkInventory(){
-        List<Product> names = this.triMedicaments();
-        for(Product p : names){
+
+
+    public List<Product> triMedicaments() {
+        List<Product> sortedProducts = new ArrayList<>(products);
+        sortedProducts.sort(Comparator.comparing(p -> p.name));
+        return sortedProducts;
+    }
+
+
+    void checkInventory() {
+        List<Product> sortedProducts = this.triMedicaments();
+        for (Product p : sortedProducts) {
             p.printAttributes();
+            System.out.println("Quantité en stock: " + quantites.get(p));
         }
     }
+
+
     public Product searchProduct(String productName) {
-
-        List<Product> names = this.triMedicaments();
-
+        List<Product> sortedProducts = this.triMedicaments();
         int left = 0;
-        int right = names.size() - 1;
+        int right = sortedProducts.size() - 1;
 
         while (left <= right) {
             int mid = left + (right - left) / 2;
-            Product midProduct = names.get(mid);
+            Product midProduct = sortedProducts.get(mid);
             int comparison = midProduct.name.compareToIgnoreCase(productName);
 
             if (comparison == 0) {
@@ -63,36 +56,33 @@ public class Pharmacy implements Serializable, java.io.Serializable {
         return null;
     }
 
-
     @Override
-    public void saveData(){
+    public void saveData() {
         try {
-            Object o = (Object) this;
             FileOutputStream fileOut = new FileOutputStream("pharmacySave.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(o);
+            out.writeObject(this);
             out.close();
             fileOut.close();
         } catch (Exception a) {
             System.out.println(a);
         }
-
     }
-    public void loadData(){
-        try
-        {
+
+
+    public void loadData() {
+        try {
             FileInputStream fileIn = new FileInputStream("pharmacySave.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-             Pharmacy pharmacy = (Pharmacy) in.readObject();
-             this.name = pharmacy.name;
-             this.address = pharmacy.address;
-             this.products = pharmacy.products;
+            Pharmacy pharmacy = (Pharmacy) in.readObject();
+            this.name = pharmacy.name;
+            this.address = pharmacy.address;
+            this.products = pharmacy.products;
+            this.quantites = pharmacy.quantites;
             in.close();
             fileIn.close();
-        }catch(Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e);
         }
     }
-
 }
