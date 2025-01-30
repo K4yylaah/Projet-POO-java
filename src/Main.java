@@ -100,15 +100,19 @@ abstract class Commande {
 
     public void ajouterProduit(Product product, int quantity, Pharmacy pharmacy) {
         int stockDisponible = pharmacy.quantites.getOrDefault(product, 0);
-        if (stockDisponible >= quantity) {
+        int stockMinimum = 5;
+
+        // Vérification si la quantité demandée laisse au moins 5 articles en stock
+        if (stockDisponible - quantity >= stockMinimum) {
             orderedProducts.add(product);
             orderedQuantities.add(quantity);
             pharmacy.quantites.put(product, stockDisponible - quantity);
             System.out.println("Médicament ajouté à la commande.");
         } else {
-            System.out.println("Stock insuffisant pour ce produit.");
+            System.out.println("Impossible de commander cette quantité. Il doit rester au moins " + stockMinimum + " articles en stock.");
         }
     }
+
 
     public void afficherRécapitulatif() {
         System.out.println("Récapitulatif de votre commande :");
