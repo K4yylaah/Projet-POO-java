@@ -2,9 +2,14 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-public class Pharmacy implements Serializable, java.io.Serializable {
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Comparator;
+
+public class Pharmacy implements Serializable {
     public String name;
     public String address;
     public List<Product> products;
@@ -15,6 +20,7 @@ public class Pharmacy implements Serializable, java.io.Serializable {
         this.address = address;
         this.products = products;
         this.quantites = new HashMap<>();
+
 
         for (Product p : products) {
             quantites.put(p, 100);
@@ -59,10 +65,9 @@ public class Pharmacy implements Serializable, java.io.Serializable {
         return null;
     }
 
-    @Override
+
     public void saveData() {
         try {
-            Object o = (Object) this;
             FileOutputStream fileOut = new FileOutputStream("pharmacySave.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(this);

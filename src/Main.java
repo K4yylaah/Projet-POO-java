@@ -10,7 +10,7 @@ public class Main {
         newpharmacy.saveData();
         Pharmacy newpharmacy2 = new Pharmacy("a","b",products);
         newpharmacy2.loadData();
-        newpharmacy2.checkInventory();
+
 
         Scanner scanner = new Scanner(System.in);
 
@@ -27,6 +27,8 @@ public class Main {
                     searchProductMenu(scanner, newpharmacy);
                     break;
                 case 3:
+
+                case 4:
                     System.out.println("Merci d'avoir utilisé notre pharmacie ! À bientôt.");
                     scanner.close();
                     return;
@@ -40,7 +42,8 @@ public class Main {
         System.out.println("\n=== MENU Pharmacie Cergy===");
         System.out.println("1. Afficher l'inventaire de la pharmacie");
         System.out.println("2. Rechercher un produit");
-        System.out.println("3. Quitter");
+        System.out.println("2. passer commande");
+        System.out.println("4. Quitter");
         System.out.print("Votre choix : ");
     }
 
