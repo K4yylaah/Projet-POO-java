@@ -93,7 +93,7 @@ public class Main {
 }
 
 abstract class Commande {
-    protected List<Product> orderedProducts = new ArrayList<>();
+    protected List<CommandeProduit> orderedProducts = new ArrayList<>();
     protected List<Integer> orderedQuantities = new ArrayList<>();
 
     public abstract void traiterCommande();
@@ -102,23 +102,44 @@ abstract class Commande {
         int stockDisponible = pharmacy.quantites.getOrDefault(product, 0);
         int stockMinimum = 5;
 
-        // Vérification si la quantité demandée laisse au moins 5 articles en stock
         if (stockDisponible - quantity >= stockMinimum) {
-            orderedProducts.add(product);
+            orderedProducts.add(new CommandeProduit(product, quantity));
             orderedQuantities.add(quantity);
             pharmacy.quantites.put(product, stockDisponible - quantity);
             System.out.println("Médicament ajouté à la commande.");
+
+            // Vérification de la quantité critique après la commande
+            if (pharmacy.quantites.get(product) < stockMinimum) {
+                System.out.println("ALERTE : Le produit " + product.name + " a une quantité critique en stock (" + pharmacy.quantites.get(product) + " restant(s)).");
+            }
         } else {
-            System.out.println("Impossible de commander cette quantité. Il doit rester au moins " + stockMinimum + " articles en stock.");
+            System.out.println("Impossible de commander cette quantité. Il doit rester au moins 5 articles en stock.");
         }
     }
-
 
     public void afficherRécapitulatif() {
         System.out.println("Récapitulatif de votre commande :");
         for (int i = 0; i < orderedProducts.size(); i++) {
-            System.out.println("- " + orderedQuantities.get(i) + " " + orderedProducts.get(i).name);
+            System.out.println("- " + orderedQuantities.get(i) + " " + orderedProducts.get(i).getProduct().name);
         }
+    }
+}
+
+class CommandeProduit {
+    private Product product;
+    private int quantity;
+
+    public CommandeProduit(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 }
 
