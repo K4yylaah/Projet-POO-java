@@ -1,13 +1,5 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Comparator;
+import java.io.*;
+import java.util.*;
 
 public class Pharmacy implements Serializable {
     public String name;
@@ -21,12 +13,10 @@ public class Pharmacy implements Serializable {
         this.products = products;
         this.quantites = new HashMap<>();
 
-
         for (Product p : products) {
-            quantites.put(p, 100);
+            quantites.put(p, p.quantityStock); // Correction : Prendre la quantité réelle du JSON
         }
     }
-
 
     public List<Product> triMedicaments() {
         List<Product> sortedProducts = new ArrayList<>(products);
@@ -34,15 +24,13 @@ public class Pharmacy implements Serializable {
         return sortedProducts;
     }
 
-
     void checkInventory() {
         List<Product> sortedProducts = this.triMedicaments();
         for (Product p : sortedProducts) {
             p.printAttributes();
-            System.out.println("Quantité en stock: " + quantites.get(p));
+            System.out.println("Quantité en stock: " + quantites.getOrDefault(p, 0)); // Affiche la quantité actuelle
         }
     }
-
 
     public Product searchProduct(String productName) {
         List<Product> sortedProducts = this.triMedicaments();
@@ -65,33 +53,25 @@ public class Pharmacy implements Serializable {
         return null;
     }
 
-
     public void saveData() {
-        try {
-            FileOutputStream fileOut = new FileOutputStream("pharmacySave.ser");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        try (FileOutputStream fileOut = new FileOutputStream("pharmacySave.ser");
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
             out.writeObject(this);
-            out.close();
-            fileOut.close();
         } catch (Exception a) {
-            System.out.println(a);
+            System.out.println("Erreur lors de la sauvegarde : " + a.getMessage());
         }
     }
 
-
     public void loadData() {
-        try {
-            FileInputStream fileIn = new FileInputStream("pharmacySave.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
+        try (FileInputStream fileIn = new FileInputStream("pharmacySave.ser");
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
             Pharmacy pharmacy = (Pharmacy) in.readObject();
             this.name = pharmacy.name;
             this.address = pharmacy.address;
             this.products = pharmacy.products;
             this.quantites = pharmacy.quantites;
-            in.close();
-            fileIn.close();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Erreur lors du chargement des données : " + e.getMessage());
         }
     }
 }

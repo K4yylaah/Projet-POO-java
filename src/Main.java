@@ -4,18 +4,13 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        List<Product> products = new ArrayList<Product>();
         Pharmacy newpharmacy = Json.createPharmacy();
         assert newpharmacy != null;
         newpharmacy.saveData();
-        Pharmacy newpharmacy2 = new Pharmacy("a","b",products);
-        newpharmacy2.loadData();
-
 
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-
             displayMenu();
             int choice = getUserChoice(scanner);
 
@@ -27,7 +22,8 @@ public class Main {
                     searchProductMenu(scanner, newpharmacy);
                     break;
                 case 3:
-
+                    passOrderMenu(scanner, newpharmacy);
+                    break;
                 case 4:
                     System.out.println("Merci d'avoir utilisé notre pharmacie ! À bientôt.");
                     scanner.close();
@@ -39,33 +35,99 @@ public class Main {
     }
 
     public static void displayMenu() {
-        System.out.println("\n=== MENU Pharmacie Cergy===");
-        System.out.println("1. Afficher l'inventaire de la pharmacie");
-        System.out.println("2. Rechercher un produit");
-        System.out.println("2. passer commande");
+        System.out.println("\n=== Menu ===");
+        System.out.println("1. Consulter l'inventaire");
+        System.out.println("2. Rechercher un médicament");
+        System.out.println("3. Passer une commande");
         System.out.println("4. Quitter");
         System.out.print("Votre choix : ");
     }
 
     public static int getUserChoice(Scanner scanner) {
-        while (!scanner.hasNextInt()) {
-            System.out.print("Veuillez entrer un numéro valide : ");
-            scanner.next();
+        try {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            return -1;
         }
-        return scanner.nextInt();
     }
 
     public static void searchProductMenu(Scanner scanner, Pharmacy newpharmacy) {
-        System.out.print("Entrez le nom du produit à rechercher : ");
-        scanner.nextLine();
+        System.out.print("Entrez le nom du médicament à rechercher : ");
         String productName = scanner.nextLine();
-
         Product product = newpharmacy.searchProduct(productName);
 
         if (product != null) {
             product.printAttributes();
+            System.out.println("Quantité en stock : " + newpharmacy.quantites.getOrDefault(product, 0));
         } else {
             System.out.println("Produit non trouvé.");
         }
+    }
+
+    public static void passOrderMenu(Scanner scanner, Pharmacy newpharmacy) {
+        System.out.println("Voulez-vous une commande prioritaire ? (1 pour oui, 2 pour non)");
+        String priorityChoice = scanner.nextLine();
+        Commande commande = (priorityChoice.equals("1")) ? new CommandePrioritaire() : new CommandeStandard();
+
+        boolean moreProducts = true;
+        while (moreProducts) {
+            System.out.print("Entrez le nom du médicament : ");
+            String productName = scanner.nextLine();
+
+            Product product = newpharmacy.searchProduct(productName);
+            if (product != null) {
+                System.out.print("Entrez la quantité souhaitée : ");
+                int quantity = Integer.parseInt(scanner.nextLine());
+                commande.ajouterProduit(product, quantity, newpharmacy);
+            } else {
+                System.out.println("Produit non trouvé.");
+            }
+
+            System.out.print("Souhaitez-vous ajouter un autre médicament à la commande ? (1 pour oui, 2 pour non) : ");
+            moreProducts = scanner.nextLine().equals("1");
+        }
+
+        commande.afficherRécapitulatif();
+        commande.traiterCommande();
+    }
+}
+
+abstract class Commande {
+    protected List<Product> orderedProducts = new ArrayList<>();
+    protected List<Integer> orderedQuantities = new ArrayList<>();
+
+    public abstract void traiterCommande();
+
+    public void ajouterProduit(Product product, int quantity, Pharmacy pharmacy) {
+        int stockDisponible = pharmacy.quantites.getOrDefault(product, 0);
+        if (stockDisponible >= quantity) {
+            orderedProducts.add(product);
+            orderedQuantities.add(quantity);
+            pharmacy.quantites.put(product, stockDisponible - quantity);
+            System.out.println("Médicament ajouté à la commande.");
+        } else {
+            System.out.println("Stock insuffisant pour ce produit.");
+        }
+    }
+
+    public void afficherRécapitulatif() {
+        System.out.println("Récapitulatif de votre commande :");
+        for (int i = 0; i < orderedProducts.size(); i++) {
+            System.out.println("- " + orderedQuantities.get(i) + " " + orderedProducts.get(i).name);
+        }
+    }
+}
+
+class CommandePrioritaire extends Commande {
+    @Override
+    public void traiterCommande() {
+        System.out.println("Commande prioritaire en cours de traitement...");
+    }
+}
+
+class CommandeStandard extends Commande {
+    @Override
+    public void traiterCommande() {
+        System.out.println("Commande standard en cours de traitement...");
     }
 }
