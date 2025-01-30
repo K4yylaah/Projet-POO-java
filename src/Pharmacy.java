@@ -14,7 +14,7 @@ public class Pharmacy implements Serializable, java.io.Serializable {
         this.address = address;
         this.products = products;
     }
-    void checkInventory(){
+    public List triMedicaments(){
         List<Product> names = new ArrayList<>();
         for (Product p : products){
             names.add(p);
@@ -32,10 +32,38 @@ public class Pharmacy implements Serializable, java.io.Serializable {
                 }
             }
         }
+        return names;
+    }
+    void checkInventory(){
+        List<Product> names = this.triMedicaments();
         for(Product p : names){
             p.printAttributes();
         }
     }
+    public Product searchProduct(String productName) {
+
+        List<Product> names = this.triMedicaments();
+
+        int left = 0;
+        int right = names.size() - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            Product midProduct = names.get(mid);
+            int comparison = midProduct.name.compareToIgnoreCase(productName);
+
+            if (comparison == 0) {
+                return midProduct;
+            } else if (comparison < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return null;
+    }
+
+
     @Override
     public void saveData(){
         try {
