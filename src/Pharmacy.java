@@ -1,6 +1,10 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-public class Pharmacy {
+public class Pharmacy implements Serializable, java.io.Serializable {
     String name;
     String address;
     List<Product> products;
@@ -29,7 +33,37 @@ public class Pharmacy {
             }
         }
         for(Product p : names){
-            p.printAttributs();
+            p.printAttributes();
+        }
+    }
+    @Override
+    public void saveData(){
+        try {
+            Object o = (Object) this;
+            FileOutputStream fileOut = new FileOutputStream("pharmacySave.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(o);
+            out.close();
+            fileOut.close();
+        } catch (Exception a) {
+            System.out.println(a);
+        }
+
+    }
+    public void loadData(){
+        try
+        {
+            FileInputStream fileIn = new FileInputStream("pharmacySave.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+             Pharmacy pharmacy = (Pharmacy) in.readObject();
+             this.name = pharmacy.name;
+             this.address = pharmacy.address;
+             this.products = pharmacy.products;
+            in.close();
+            fileIn.close();
+        }catch(Exception e)
+        {
+            System.out.println(e);
         }
     }
 

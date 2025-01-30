@@ -21,8 +21,8 @@ public class Json {
             // Accéder aux produits
             JSONObject pharmacie = (JSONObject) jsonObject.get("pharmacie");
             JSONArray produits = (JSONArray) pharmacie.get("produits");
-            String pharmacieName = (String) pharmacie.get("name");
-            String address = (String) pharmacie.get("address");
+            String pharmacieName = (String) pharmacie.get("nom");
+            String address = (String) pharmacie.get("adresse");
             for (Object produitObj : produits) {
                 JSONObject produit = (JSONObject) produitObj;
                 String categorie = (String) produit.get("categorie");

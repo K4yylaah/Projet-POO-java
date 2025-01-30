@@ -1,4 +1,4 @@
-public class Product{
+public class Product implements java.io.Serializable{
     Long id;
     String category;
     String subcategory;
@@ -16,7 +16,7 @@ public class Product{
         this.description = description;
     }
 
-    public void printAttributs(){
+    public void printAttributes(){
         System.out.println("ID: " + id);
         System.out.println("Name: " + name);
         System.out.println("Category: " + category);
