@@ -5,9 +5,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 public class Pharmacy implements Serializable, java.io.Serializable {
-    String name;
-    String address;
-    List<Product> products;
+    public String name;
+    public String address;
+    public List<Product> products;
 
     public Pharmacy(String name, String address, List<Product> products) {
         this.name = name;
