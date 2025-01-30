@@ -1,11 +1,14 @@
-import java.io.*;
-import java.util.*;
-
-public class Pharmacy implements Serializable {
-    String name;
-    String address;
-    List<Product> products;
-    Map<Product, Integer> quantites;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+public class Pharmacy implements Serializable, java.io.Serializable {
+    public String name;
+    public String address;
+    public List<Product> products;
+    public Map<Product, Integer> quantites;
 
     public Pharmacy(String name, String address, List<Product> products) {
         this.name = name;
@@ -59,6 +62,7 @@ public class Pharmacy implements Serializable {
     @Override
     public void saveData() {
         try {
+            Object o = (Object) this;
             FileOutputStream fileOut = new FileOutputStream("pharmacySave.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(this);
