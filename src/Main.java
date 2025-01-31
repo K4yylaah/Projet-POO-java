@@ -30,6 +30,9 @@ public class Main {
                     Pharmacy.removeProduct(scanner, newpharmacy);
                     break;
                 case 5:
+                    Pharmacy.productsOutOfStock(scanner, newpharmacy);
+                    break;
+                case 6:
                     System.out.println("Merci d'avoir utilisé notre pharmacie ! À bientôt.");
                     scanner.close();
                     return;
@@ -45,7 +48,8 @@ public class Main {
         System.out.println("2. Rechercher un produit");
         System.out.println("3. passer commande");
         System.out.println("4. Retirer un produit");
-        System.out.println("5. Quitter");
+        System.out.println("5. Afficher les produits en rupture de stock");
+        System.out.println("6. Quitter");
         System.out.print("Votre choix : ");
     }
 

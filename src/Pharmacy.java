@@ -105,16 +105,18 @@ public class Pharmacy implements Serializable {
 
     }
     public static void removeProduct(Scanner scanner, Pharmacy newpharmacy) {
+        // Demande le produit que l'utilisateur veut supprimer
         System.out.print("Entrez le nom du produit à supprimer : ");
         scanner.nextLine();
         String productName = scanner.nextLine();
-
+         // Vérifie que le nom est valide
         if (productName != null && !productName.isEmpty()) {
+            // Parcours la liste des produits et filtre pour trouver le produit correspondant au nom
             Optional<Product> productToRemove = newpharmacy.products.stream()
-                    .filter(f -> f.name.equals(productName))
+                    .filter(p -> p.name.equals(productName))
                     .findFirst();
             if (productToRemove.isPresent()) {
-                // Si le produit existe, on le supprime
+                // Supprime le produit s'il existe
                 newpharmacy.products.remove(productToRemove.get());
                 System.out.println("Le produit a été supprimé.");
             } else {
@@ -123,4 +125,20 @@ public class Pharmacy implements Serializable {
         } else {
             System.out.println("La suppression a échoué. Nom de produit invalide.");
         }
-    }}
+    }
+    public static void productsOutOfStock(Scanner scanner, Pharmacy newpharmacy) {
+        // Création d'une liste de paires (Produit, Quantité)
+        scanner.nextLine();
+        List<Product> outOfStock = newpharmacy.products.stream()
+                .filter(p -> p.quantityStock <= 5 )
+                .toList();
+        if (!outOfStock.isEmpty()) { // Vérifie que la liste n'est pas vide
+            System.out.println("Produits en rupture de stock :");
+            outOfStock.forEach(p -> System.out.println("- " + p.name));
+            }
+        else {
+                System.out.println("Aucun produit n'est proche de la rupture de stock.");
+            }
+        }
+
+    }
