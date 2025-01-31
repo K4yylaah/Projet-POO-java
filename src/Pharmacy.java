@@ -127,18 +127,19 @@ public class Pharmacy implements Serializable {
         }
     }
     public static void productsOutOfStock(Scanner scanner, Pharmacy newpharmacy) {
-        // Création d'une liste de paires (Produit, Quantité)
+        // Création d'une liste
         scanner.nextLine();
+        //p
         List<Product> outOfStock = newpharmacy.products.stream()
                 .filter(p -> p.quantityStock <= 5 )
                 .toList();
         if (!outOfStock.isEmpty()) { // Vérifie que la liste n'est pas vide
             System.out.println("Produits en rupture de stock :");
+            // Parcourt la liste et affiche le nom des produits concernés
             outOfStock.forEach(p -> System.out.println("- " + p.name));
             }
         else {
                 System.out.println("Aucun produit n'est proche de la rupture de stock.");
             }
         }
-
     }
